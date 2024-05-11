@@ -18,6 +18,7 @@ dependencies {
     val log4j = "2.23.1"
     val jackson = "2.17.0"
     val security = "6.2.4"
+    val jwt = "0.11.2"
 
     // Needed for Spring Data
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlin}")
@@ -37,7 +38,9 @@ dependencies {
     implementation("org.springframework.security:spring-security-web:${security}")
     implementation("org.springframework.security:spring-security-oauth2-resource-server:${security}")
     implementation("org.springframework.security:spring-security-oauth2-jose:${security}")
-
+    implementation("io.jsonwebtoken:jjwt-api:${jwt}")
+    implementation("io.jsonwebtoken:jjwt-impl:${jwt}")
+    implementation("io.jsonwebtoken:jjwt-jackson:${jwt}")
     // Serialization
     implementation("com.fasterxml.jackson.core:jackson-databind:${jackson}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jackson}")

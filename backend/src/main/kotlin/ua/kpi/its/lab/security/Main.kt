@@ -66,7 +66,7 @@ private val servletContextHandler: ServletContextHandler
         val springServletHolder = ServletHolder("dispatcherServlet", dispatcherServlet) // Wrap the servlet in a holder.
 
         // Configure the ServletContextHandler.
-        return ServletContextHandler(ServletContextHandler.SESSIONS).apply {
+        return Servlet.ontextHandler(ServletContextHandler.SESSIONS).apply {
             errorHandler = null // Optional: Custom error handling can be configured here.
             contextPath = "/" // Set the context path to the root.
             addServlet(springServletHolder, "/*") // Register the DispatcherServlet to handle all requests.
