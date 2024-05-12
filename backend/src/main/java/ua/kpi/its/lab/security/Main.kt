@@ -1,6 +1,7 @@
 package ua.kpi.its.lab.security
 
 import jakarta.servlet.DispatcherType
+import jakarta.servlet.Servlet
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.eclipse.jetty.ee10.servlet.FilterHolder
@@ -66,7 +67,7 @@ private val servletContextHandler: ServletContextHandler
         val springServletHolder = ServletHolder("dispatcherServlet", dispatcherServlet) // Wrap the servlet in a holder.
 
         // Configure the ServletContextHandler.
-        return Servlet.ontextHandler(ServletContextHandler.SESSIONS).apply {
+        return ServletContextHandler(ServletContextHandler.SESSIONS).apply {
             errorHandler = null // Optional: Custom error handling can be configured here.
             contextPath = "/" // Set the context path to the root.
             addServlet(springServletHolder, "/*") // Register the DispatcherServlet to handle all requests.

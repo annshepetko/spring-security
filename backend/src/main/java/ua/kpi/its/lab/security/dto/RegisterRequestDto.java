@@ -1,10 +1,5 @@
 package ua.kpi.its.lab.security.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
-
-
-
 public class RegisterRequestDto {
     private String username;
     private String password;
