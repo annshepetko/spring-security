@@ -1,3 +1,4 @@
+
 package ua.kpi.its.lab.security.dto;
 
 public class RegisterRequestDto {
@@ -16,4 +17,9 @@ public class RegisterRequestDto {
         this.username = username;
         this.password = password;
     }
+
+    public RegisterRequestDto() {
+
+    }
+
 }

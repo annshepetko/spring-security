@@ -1,6 +1,7 @@
 package ua.kpi.its.lab.security.svc.auth;
 
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,15 +38,19 @@ public class AuthenticationService {
         this.jwtService = jwtService;
     }
 
-    public String register(RegisterRequestDto registerRequestDto) {
-        User existingUser = (User) userDetailsService.loadUserByUsername(registerRequestDto.getUsername());
+    public ResponseEntity<String> register(RegisterRequestDto registerRequestDto) {
 
+        if(!userRepository.findByUsername(registerRequestDto.getUsername()).isEmpty()){
+
+            return ResponseEntity.badRequest().body("User already exists");
+
+        }
         User newUser = new User();
         newUser.setUsername(registerRequestDto.getUsername());
         newUser.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
 
         userRepository.save(newUser);
-        return jwtService.generateToken(existingUser);
+        return ResponseEntity.ok().body(jwtService.generateToken(newUser));
     }
 
     public String authenticate(RegisterRequestDto authenticateRequestDto) {
