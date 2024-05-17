@@ -29,6 +29,8 @@ dependencies {
     implementation("org.hibernate.orm:hibernate-core:6.4.4.Final")
 
     // Web
+    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.0.0")
     implementation("org.eclipse.jetty.ee10:jetty-ee10-webapp:12.0.8")
     implementation("org.springframework:spring-webmvc:${spring}")

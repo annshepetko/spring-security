@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ua.kpi.its.lab.security.builders.RouteBuilderImpl;
 import ua.kpi.its.lab.security.builders.TrainBuilderImpl;
 
+import ua.kpi.its.lab.security.dto.CreateTrainRequest;
 import ua.kpi.its.lab.security.dto.RouteDto;
 import ua.kpi.its.lab.security.dto.TrainDto;
 import ua.kpi.its.lab.security.entity.Route;
@@ -32,8 +33,9 @@ public class TrainControllerService {
      *
      * @param trainDto Інформація про поїзд для створення.
      */
-    public void create(TrainDto trainDto){
+    public void create(CreateTrainRequest trainDto){
         Train train = buildTrainFromRequest(trainDto);
+        routeRepository.saveAll(train.getRoutes());
         trainService.create(train);
     }
 
@@ -43,7 +45,7 @@ public class TrainControllerService {
      * @param createTrainRequest Інформація про поїзд у форматі [TrainDto].
      * @return Об'єкт поїзда у форматі [Train].
      */
-    private Train buildTrainFromRequest(TrainDto createTrainRequest){
+    private Train buildTrainFromRequest(CreateTrainRequest createTrainRequest){
         return new TrainBuilderImpl().builder()
                 .model(createTrainRequest.model())
                 .hasConditioner(createTrainRequest.hasConditioner())
@@ -93,7 +95,8 @@ public class TrainControllerService {
      * @param train Об'єкт поїзда у форматі [Train].
      * @return Інформація про поїзд у форматі [TrainDto].
      */
-    public TrainDto buildTrainDtoFromTrain(Train train){
+
+    public TrainDto buildTrainDtoFromTrain(Train train) {
         return new TrainDto(
                 train.getId(),
                 train.getModel(),
