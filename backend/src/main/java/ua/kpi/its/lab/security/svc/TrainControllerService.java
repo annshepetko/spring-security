@@ -1,5 +1,10 @@
 package ua.kpi.its.lab.security.svc;
 
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.kpi.its.lab.security.builders.RouteBuilderImpl;
@@ -13,12 +18,14 @@ import ua.kpi.its.lab.security.entity.Train;
 import ua.kpi.its.lab.security.repo.RouteRepository;
 import ua.kpi.its.lab.security.svc.impl.TrainServiceImpl;
 
+import java.util.Collections;
 import java.util.List;
 
 
 @Service
 public class TrainControllerService {
 
+    private static final Logger log = LoggerFactory.getLogger(TrainControllerService.class);
     private final TrainServiceImpl trainService;
     private final RouteRepository routeRepository;
 
@@ -35,8 +42,11 @@ public class TrainControllerService {
      */
     public void create(CreateTrainRequest trainDto){
         Train train = buildTrainFromRequest(trainDto);
-        routeRepository.saveAll(train.getRoutes());
+
         trainService.create(train);
+        routeRepository.saveAll(train.getRoutes());
+
+       log.info("routes::", routeRepository.findAll() );
     }
 
     /**
@@ -56,6 +66,7 @@ public class TrainControllerService {
                 .weight(createTrainRequest.weight())
                 .routes(createTrainRequest.routeDtos().stream()
                         .map(r -> new RouteBuilderImpl().builder()
+                                .trains(Collections.emptyList())
                                 .dateOfShipment(r.dateOfShipment())
                                 .departurePoint(r.departurePoint())
                                 .destination(r.destination())
@@ -75,6 +86,9 @@ public class TrainControllerService {
      * @return Список DTO об'єктів маршрутів.
      */
     private List<RouteDto> buildRouteDtosForTrain(Train train){
+
+        log.info("routes: {}", train.getRoutes());
+
         List<RouteDto> routeDtos = train.getRoutes().stream().map(r -> new RouteDto(
                         r.getId(),
                         r.getDeparturePoint(),

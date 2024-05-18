@@ -1,5 +1,6 @@
 package ua.kpi.its.lab.security.dto;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record CreateRouteRequest(
         String departurePoint,
@@ -7,5 +8,8 @@ public record CreateRouteRequest(
         LocalDateTime dateOfShipment,
         Integer mileage,
         Double priceOfTicket,
-        Boolean isCircular) {
+        Boolean isCircular,
+        List<TrainDto> trainDtos
+        )
+{
 }

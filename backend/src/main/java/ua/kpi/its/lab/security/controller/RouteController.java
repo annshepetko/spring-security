@@ -3,6 +3,7 @@ package ua.kpi.its.lab.security.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ua.kpi.its.lab.security.dto.CreateRouteRequest;
 import ua.kpi.its.lab.security.dto.RouteDto;
 import ua.kpi.its.lab.security.svc.RouteControllerService;
 
@@ -24,7 +25,7 @@ public class RouteController {
      */
     @GetMapping("/{id}")
     public RouteDto getRoute(@PathVariable("id") Integer id) {
-        return null;
+        return routeControllerService.getRoute(id);
     }
 
     /**
@@ -44,7 +45,7 @@ public class RouteController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void createRoute(@RequestBody RouteDto routeDto) {
+    public void createRoute(@RequestBody CreateRouteRequest routeDto) {
         routeControllerService.createRoute(routeDto);
     }
 

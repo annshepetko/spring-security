@@ -20,12 +20,13 @@ public class Train implements Comparable<Train> {
     private Double weight;
     private Boolean hasConditioner;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             joinColumns = @JoinColumn(name = "train_id"),
             inverseJoinColumns = @JoinColumn(name = "route_id")
     )
     private List<Route> routes;
+
     public Integer getId() {
         return this.id;
     }

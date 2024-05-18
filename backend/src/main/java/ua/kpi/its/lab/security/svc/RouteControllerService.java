@@ -3,10 +3,16 @@ package ua.kpi.its.lab.security.svc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.kpi.its.lab.security.builders.RouteBuilderImpl;
+import ua.kpi.its.lab.security.builders.TrainBuilderImpl;
 import ua.kpi.its.lab.security.dto.CreateRouteRequest;
 import ua.kpi.its.lab.security.dto.RouteDto;
+import ua.kpi.its.lab.security.dto.TrainDto;
 import ua.kpi.its.lab.security.entity.Route;
+import ua.kpi.its.lab.security.entity.Train;
 import ua.kpi.its.lab.security.svc.impl.RouteServiceImpl;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -67,15 +73,52 @@ public class RouteControllerService {
         routeService.delete(id);
     }
 
+
+    private List<Train> exchangeTrainsDtosForTrain(List<TrainDto> trainDtos) {
+        return trainDtos.stream()
+                .map(this::buildTrainFromDto)
+                .collect(Collectors.toList());
+    }
+
+    private Train buildTrainFromDto(TrainDto trainDto) {
+        return new TrainBuilderImpl().builder()
+                .model(trainDto.model())
+                .producer(trainDto.producer())
+                .type(trainDto.type())
+                .dateOfCommissioning(trainDto.dateOfCommissioning())
+                .numberOfSeats(trainDto.numberOfSeats())
+                .weight(trainDto.weight())
+                .hasConditioner(trainDto.hasConditioner())
+                .routes(trainDto.routeDtos().stream()
+                        .map(this::buildRouteFromDto)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    private Route buildRouteFromDto(RouteDto routeDto) {
+        return new RouteBuilderImpl().builder()
+                .dateOfShipment(routeDto.dateOfShipment())
+                .departurePoint(routeDto.departurePoint())
+                .destination(routeDto.destination())
+                .isCircular(routeDto.isCircular())
+                .mileage(routeDto.mileage())
+                .isCircular(routeDto.isCircular())
+                .priceOfTicket(routeDto.priceOfTicket())
+                .build();
+    }
     /**
      * Створює новий маршрут.
      *
      * @param routeDto Інформація про маршрут для створення.
      */
+
+
+
     public void createRoute(CreateRouteRequest routeDto) {
         Route route = new RouteBuilderImpl().builder()
                 .priceOfTicket(routeDto.priceOfTicket())
                 .mileage(routeDto.mileage())
+                .trains(exchangeTrainsDtosForTrain(routeDto.trainDtos()))
                 .departurePoint(routeDto.departurePoint())
                 .isCircular(routeDto.isCircular())
                 .destination(routeDto.destination())

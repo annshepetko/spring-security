@@ -1,19 +1,30 @@
 package ua.kpi.its.lab.security.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Route implements Comparable<Route> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "routes")
+    private List<Train> trains;
+
+    public List<Train> getTrains() {
+        return trains;
+    }
+
+
+    public void setTrains(List<Train> trains) {
+        this.trains = trains;
+    }
 
     private String departurePoint;
     private String destination;
@@ -92,7 +103,7 @@ public class Route implements Comparable<Route> {
     }
 
     public void setIsCircular(Boolean isCircular) {
-        isCircular = isCircular;
+        this.isCircular = isCircular;
     }
 
     @Override
