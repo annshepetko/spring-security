@@ -8,6 +8,8 @@ import ua.kpi.its.lab.security.dto.CreateTrainRequest;
 import ua.kpi.its.lab.security.dto.TrainDto;
 import ua.kpi.its.lab.security.svc.TrainControllerService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/train")
 public class TrainController {
@@ -46,4 +48,8 @@ public class TrainController {
         return "Hello World!";
     }
 
+    @GetMapping("/all")
+    public List<TrainDto> getAllTrains() {
+        return trainService.getAll();
+    }
 }

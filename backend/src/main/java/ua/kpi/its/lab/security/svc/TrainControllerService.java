@@ -20,6 +20,7 @@ import ua.kpi.its.lab.security.svc.impl.TrainServiceImpl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -167,6 +168,21 @@ public class TrainControllerService {
         return buildTrainDtoFromTrain(train);
     }
 
+    public List<TrainDto> getAll(){
+        List<Train> trains = trainService.findAll();
+        return trains.stream()
+                .map(train -> new TrainDto(
+                        train.getId(),
+                        train.getModel(),
+                        train.getProducer(),
+                        train.getType(),
+                        train.getDateOfCommissioning(),
+                        train.getNumberOfSeats(),
+                        train.getWeight(),
+                        train.getHasConditioner(),
+                        buildRouteDtosForTrain(train)))
+                .toList();
+    }
     /**
      * Видаляє поїзд за його ідентифікатором.
      *
