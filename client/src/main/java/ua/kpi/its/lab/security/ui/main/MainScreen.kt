@@ -11,6 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.ktor.client.*
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ResponseException
+import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.basicAuth
 import io.ktor.client.request.get
@@ -18,12 +21,14 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
 import io.ktor.client.utils.EmptyContent.contentType
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.content.TextContent
 import io.ktor.http.contentType
 import io.ktor.http.headers
+import io.ktor.http.isSuccess
 import io.ktor.util.InternalAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -435,14 +440,56 @@ suspend fun fetchItems(token: String, client: HttpClient, onSuccess: (List<Train
 @OptIn(InternalAPI::class)
 suspend fun createItem(token: String, client: HttpClient, uiTrainDto: Train) {
     val backendTrainDto = convertToBackendTrainDto(uiTrainDto)
-    val response: HttpResponse = client.post("http://localhost:8080/api/train") {
-        header("Authorization", "Bearer: $token")
-        body = TextContent(
-            """{"id": "${backendTrainDto.id}", "model": "${backendTrainDto.model}", "producer": "${backendTrainDto.producer}", "type": "${backendTrainDto.type}", "dateOfCommissioning": "${backendTrainDto.dateOfCommissioning}", "numberOfSeats": "${backendTrainDto.numberOfSeats}", "weight": "${backendTrainDto.weight}"}, "hasConditioner": "${backendTrainDto.hasConditioner}"}, "routeDtos": "${backendTrainDto.routeDtos}"}""",
-            contentType = ContentType.Application.Json
-        )
+
+    // Manually constructing the JSON string
+    val jsonBody = """
+        {
+    "model": "Express",
+    "producer": "TrainCo",
+    "type": "PASSAGER",
+    "dateOfCommissioning": "2024-05-17T10:30:00",
+    "numberOfSeats": 200,
+    "weight": 150.5,
+    "hasConditioner": true,
+    "routeDtos": [
+
+    ]
+}
+    """
+    try {
+        val response: HttpResponse = client.post("http://localhost:8080/api/train") {
+            contentType(ContentType.Application.Json)
+            body = TextContent(
+                """{
+    "model": "${backendTrainDto.model}",
+    "producer": "${backendTrainDto.producer}",
+    "type": "${backendTrainDto.type}",
+    "dateOfCommissioning": "${backendTrainDto.dateOfCommissioning}",
+    "numberOfSeats": ${backendTrainDto.numberOfSeats},
+    "weight": ${backendTrainDto.weight},
+    "hasConditioner": ${backendTrainDto.hasConditioner},
+    "routeDtos": [  
+
+    ]
+}""",
+                contentType = ContentType.Application.Json
+            )
+        }
+
+        if (response.status.isSuccess()) {
+            println("Item created successfully: ${response.bodyAsText()}")
+        } else {
+            println("Failed to create item: ${response.status} - ${response.bodyAsText()}")
+        }
+    } catch (e: ClientRequestException) {
+        println("Client error: ${e.response.status} - ${e.response.bodyAsText()}")
+    } catch (e: ServerResponseException) {
+        println("Server error: ${e.response.status} - ${e.response.bodyAsText()}")
+    } catch (e: ResponseException) {
+        println("Unexpected response: ${e.response.status} - ${e.response.bodyAsText()}")
+    } catch (e: Exception) {
+        println("Error: ${e.message}")
     }
-    println(response)
 }
 
 suspend fun updateItem(token: String, client: HttpClient, train: Train) {

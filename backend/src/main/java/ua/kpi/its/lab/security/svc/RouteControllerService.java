@@ -3,7 +3,6 @@ package ua.kpi.its.lab.security.svc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.kpi.its.lab.security.builders.RouteBuilderImpl;
-import ua.kpi.its.lab.security.dto.CreateRouteRequest;
 import ua.kpi.its.lab.security.dto.RouteDto;
 import ua.kpi.its.lab.security.entity.Route;
 import ua.kpi.its.lab.security.svc.impl.RouteServiceImpl;
@@ -72,7 +71,7 @@ public class RouteControllerService {
      *
      * @param routeDto Інформація про маршрут для створення.
      */
-    public void createRoute(CreateRouteRequest routeDto) {
+    public void createRoute(RouteDto routeDto) {
         Route route = new RouteBuilderImpl().builder()
                 .priceOfTicket(routeDto.priceOfTicket())
                 .mileage(routeDto.mileage())
